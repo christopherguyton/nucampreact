@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import {
   Card,
@@ -7,19 +7,24 @@ import {
   CardTitle,
 } from 'reactstrap';
 
-class Directory extends Component {
 
+function RenderDirectoryItem({campsite, onClick}) {
+  return (
+    <Card onClick={() => onClick(campsite.id)}>
+    <CardImg width="100%" src={campsite.image} alt={campsite.name} />
+    <CardImgOverlay>
+      <CardTitle>{campsite.name}</CardTitle>
+    </CardImgOverlay>
+  </Card>
+  );
+}
 
-  render() {
-    const directory = this.props.campsites.map((campsite) => {
+function Directory(props) {
+
+    const directory = props.campsites.map(campsite => {
       return (
         <div key={campsite.id} className="col-md-5 m-1">
-          <Card onClick={() => this.props.onClick(campsite.id)}>
-            <CardImg width="100%" src={campsite.image} alt={campsite.name} />
-            <CardImgOverlay>
-              <CardTitle>{campsite.name}</CardTitle>
-            </CardImgOverlay>
-          </Card>
+      <RenderDirectoryItem campsite={campsite} onClick={props.onClick}/>
         </div>
       );
     });
@@ -29,6 +34,6 @@ class Directory extends Component {
       </div>
     );
   }
-}
 
+  
 export default Directory;
