@@ -1,7 +1,82 @@
-import React from 'react';
-import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import React, { Component } from 'react';
+import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, Button, Modal, ModalBody, ModalHeader, Input, Form, FormGroup, Label} from 'reactstrap';
+import {LocalForm, Control, Errors} from 'react-redux-form'
 import { Link } from 'react-router-dom';
+import { render } from '@testing-library/react';
 
+const maxLength = (len) => (val) => !val || val.length <= len;
+const minLength = (len) => (val) => val && val.length >= len;
+
+
+class CommentForm extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            isModalOpen: false
+          };
+          this.toggleModal = this.toggleModal.bind(this);
+          this.handleSubmit = this.handleSubmit.bind(this);
+
+    }
+
+    
+        render() {
+            return(
+            <React.Fragment>
+            <Button onClick={this.toggleModal} outline><i className="fa fa-pencil fa-lg"/>Submit Comment</Button>
+            <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+            <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
+            <div className="form-group">
+            <ModalHeader>Submit Comment</ModalHeader>
+            <ModalBody>
+            Rating
+            <Control.select model=".rating" id="rating" name="rating" className="form-control">
+            <option value ="1">1</option>
+            <option value ="2">2</option>
+            <option value ="3">3</option>
+            <option value ="4">4</option>
+            <option value ="5">5</option>
+            </Control.select>
+        Author
+          <Control.text model=".author" id="author" name="author" className="form-control" placeholder="Your Name" validators={{minLength:minLength(2), maxLength:maxLength(15),}}>
+          
+          </Control.text> 
+          <Errors
+          className="text-danger"
+          model=".author"
+          show="touched"
+          component="div"
+          messages={{
+              minLength: "Must be at least 2 characters",
+              maxLength: "Must be 15 characters or less",
+          }}/>
+
+          Comments
+          <Control.textarea model=".text" id="text" name="text" rows="6" className="form-control">
+
+          </Control.textarea>
+          <Button color="primary" value="submit">Submit</Button>
+            </ModalBody>
+            </div>
+            </LocalForm>
+            </Modal>
+            </React.Fragment>   
+            );
+        }
+
+        toggleModal() {
+            this.setState({
+                isModalOpen: !this.state.isModalOpen
+            });
+        }
+        handleSubmit(values) {
+            this.toggleModal();
+            console.log("Current State is: " + JSON.stringify(values));
+            alert("Current State is: " + JSON.stringify(values));
+    
+    }    
+    
+}
 
    function RenderCampsite({campsite}) {
         return (
@@ -30,6 +105,7 @@ import { Link } from 'react-router-dom';
                             </div>
                         );
                     })}
+                    <CommentForm/>
                 </div>
             );
         }
@@ -59,4 +135,6 @@ import { Link } from 'react-router-dom';
         }
         return <div />;
     }
+
+    
 export default CampsiteInfo;
