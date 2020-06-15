@@ -3,6 +3,7 @@ import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbIte
 import {LocalForm, Control, Errors} from 'react-redux-form'
 import { Link } from 'react-router-dom';
 import { render } from '@testing-library/react';
+import {Loading} from './LoadingComponent';
 
 const maxLength = (len) => (val) => !val || val.length <= len;
 const minLength = (len) => (val) => val && val.length >= len;
@@ -71,8 +72,7 @@ class CommentForm extends Component {
         }
         handleSubmit(values) {
             this.toggleModal();
-            console.log("Current State is: " + JSON.stringify(values));
-            alert("Current State is: " + JSON.stringify(values));
+            this.props.addComment(this.props.campsiteId, values.rating, values.author, values.text)
     
     }    
     
@@ -91,7 +91,7 @@ class CommentForm extends Component {
         )
     }
 
-    function RenderComments({comments}) {
+    function RenderComments({comments, addComment, campsiteId}) {
         if (comments) {
             return (
                 <div className="col-md-5 m-1">
@@ -105,7 +105,7 @@ class CommentForm extends Component {
                             </div>
                         );
                     })}
-                    <CommentForm/>
+                    <CommentForm campsiteId={campsiteId} addComment={addComment}/>
                 </div>
             );
         }
@@ -113,6 +113,28 @@ class CommentForm extends Component {
     }
 
     function CampsiteInfo(props) {
+        if (props.isLoading) {
+            return(
+                <div className="container">
+                <div className="row">
+                <Loading/>
+                </div>
+                </div>
+            );
+        }
+
+        if (props.errMess) {
+            return(
+                <div className="container">
+                <div className="row">
+                <div className="col">
+                <h4>{props.errMess}</h4>
+                </div>
+                </div>
+                </div>
+            );
+        }
+
         if (props.campsite) { //ASKS IF ITS TRUTHY BY SEEING IF IT EXISTS
             return (
                 <div className="container">
@@ -128,7 +150,10 @@ class CommentForm extends Component {
                     </div>
                     <div className="row">
                         <RenderCampsite campsite={props.campsite} />
-                        <RenderComments comments={props.comments} />
+                        <RenderComments comments={props.comments} 
+        
+                        addComment={props.addComment}
+                        campsiteId={props.campsite.id}/>
                     </div>
                 </div>
             );
