@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Breadcrumb, BreadcrumbItem,
     Button, Label, Col, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { Control, LocalForm, Errors } from 'react-redux-form';
+import { Control, Form, Errors, actions } from 'react-redux-form';
 
 const required = val => val && val.length;
 const maxLength = len => val => !val || (val.length <= len);
@@ -83,7 +83,7 @@ handleInputChange(event) {
 handleSubmit(event) {
     console.log("Current state is: " +  JSON.stringify(this.state));
     alert("Current state is: " +  JSON.stringify(this.state));
-    event.preventDefault();
+   this.props.resetFeedbackForm();
 }
 render() {
 
@@ -122,7 +122,7 @@ render() {
                <hr />
             </div>
              <div className="col-md-10">
-             <LocalForm onSubmit={values => this.handleSubmit(values)}>
+             <Form model="feedbackForm" onSubmit={values => this.handleSubmit(values)}>
              <Row className="form-group">
                  <Label htmlFor="firstName" md={2}>First Name</Label>
                  <Col md={10}>
@@ -245,7 +245,7 @@ render() {
                      </Button>
                  </Col>
              </Row>
-         </LocalForm>
+         </Form>
              </div>
          </div>
      </div>
